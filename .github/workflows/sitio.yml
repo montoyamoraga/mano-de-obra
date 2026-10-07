@@ -1,0 +1,76 @@
+# Publica el sitio en GitHub Pages en cada push a main: trompo dibuja los
+# videos de trompo.yml y hacer-sitio.mjs escribe la página. Nada de esto se
+# guarda en el repositorio.
+#
+# Una vez: Settings > Pages > Build and deployment > Source: "GitHub Actions".
+
+name: sitio
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  construir:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      # Se instala desde el repositorio y no con la acción de trompo, porque
+      # la acción hace `git add` de los videos, y aquí _sitio/ está ignorado.
+      - name: Clonar trompo
+        uses: actions/checkout@v7
+        with:
+          repository: piruetasxyz/trompo
+          path: .trompo
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version: "24"
+
+      - name: Instalar trompo
+        working-directory: .trompo
+        run: |
+          npm ci --no-audit --no-fund
+          npx playwright install-deps chromium-headless-shell
+          sudo apt-get update --quiet
+          sudo apt-get install --yes --quiet --no-install-recommends ffmpeg
+
+      # trompo no vuelve a dibujar un video si su huella en trompo.json no
+      # cambió, así que guardar los videos entre corridas ahorra el dibujo.
+      - name: Recuperar videos
+        uses: actions/cache@v6
+        with:
+          path: _sitio/videos
+          key: videos-${{ hashFiles('*.glb', 'trompo.yml') }}
+          restore-keys: videos-
+
+      - name: Dibujar videos
+        run: node .trompo/bin/trompo.js
+
+      - name: Escribir la página
+        run: node hacer-sitio.mjs
+
+      - uses: actions/upload-pages-artifact@v5
+        with:
+          path: _sitio
+
+  publicar:
+    needs: construir
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.publicacion.outputs.page_url }}
+    steps:
+      - id: publicacion
+        uses: actions/deploy-pages@v5

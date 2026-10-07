@@ -1,0 +1,25 @@
+# Videos de tornamesa de los escaneos, dibujados con trompo
+# (https://github.com/piruetasxyz/trompo). Las rutas son relativas a la raíz
+# de este repositorio.
+
+# Los videos van dentro del sitio; hacer-sitio.mjs escribe la página.
+carpeta-videos: _sitio/videos
+
+# z: gira como un disco; x: rueda hacia abajo, como un tambor, y muestra la
+# parte de abajo del escaneo, que está abierta.
+giros: [z, x]
+medidas:
+  cuadrado: 1080x1080
+  vertical: 1080x1920
+fondos:
+  blanco: "#ffffff"
+  rosado: "#ff9ecf"
+formatos: [mp4]
+segundos: 6
+
+modelos:
+  # El escaneo trae la tela sobre la que descansa el puño: mirado desde
+  # arriba se lee mejor la mano.
+  - nombre: mano-izq-puno
+    archivo: 2026-10-07-mano-izq-puno.glb
+    elevacion: 60
