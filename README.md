@@ -19,7 +19,7 @@ open _sitio/index.html
 
 ## Pirámide
 
-[piramide/](piramide/) es un subsitio: una pirámide de 1.015 copias del puño que crece al bajar por la página, con la ficha de un aviso de propiedades.
+[piramide/](piramide/) es un subsitio: copias del puño caen sin parar sobre una pila que crece como pirámide, cada vez más rápido, hasta llenar la pantalla. No tiene tope: con miles de manos el navegador se pone lento.
 
 - [piramide/index.html](piramide/index.html): la página, con three.js desde jsDelivr.
 - [piramide/puno.glb](piramide/puno.glb): el puño sin la tela, hecho con [piramide/recortar.py](piramide/recortar.py) (necesita numpy y Pillow):

@@ -118,7 +118,7 @@ const pagina = `<!doctype html>
 <main>
 <h1>${escapar(TITULO)}</h1>
 <p class="intro">Escaneos 3D de manos, hechos con Scaniverse. Modelo: ${descargas}.
-También: <a href="piramide/index.html">pirámide de mano de obra</a>.</p>
+También: <a href="piramide/index.html">pirámide</a>.</p>
 ${secciones.join('\n')}
 <footer>hecho con <a href="https://github.com/piruetasxyz/trompo">trompo</a></footer>
 </main>
