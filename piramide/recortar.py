@@ -1,11 +1,11 @@
 """Recorta el puño de un escaneo de Scaniverse: deja la mano y la manga y
-saca la tela sobre la que descansa, para poder apilar muchas copias.
+un círculo de la tela sobre la que descansa, para poder apilar muchas copias.
 
-La tela es casi un plano: se ajusta un plano a la tela que rodea el puño y
-se quedan los triángulos cerca del puño que se levantan sobre ese plano, y de
-ellos solo el pedazo conectado más grande. El modelo queda nivelado, con la
-tela en y = 0. La textura se recorta a lo que usan esos triángulos y se
-achica, así el modelo pesa poco.
+Se queda un círculo de tela alrededor del puño (ALTURA permite sacar también
+la tela) y de él solo el pedazo conectado más grande. La tela es casi un
+plano, que se ajusta con la tela que rodea al círculo: el modelo queda
+nivelado, con la tela en y = 0. La textura se recorta a lo que usan esos
+triángulos y se achica, así el modelo pesa poco.
 
 Uso, desde la raíz del repositorio:
     python3 piramide/recortar.py 2026-10-07-mano-izq-puno.glb piramide/puno.glb
@@ -22,10 +22,11 @@ from PIL import Image
 
 # Dónde está el puño en el escaneo (metros) y cuánto se deja a su alrededor.
 CENTRO = np.array([0.03, -0.245, -0.12])
-RADIO = 0.18
-# Altura mínima sobre la tela para que un triángulo sea parte de la mano.
-ALTURA = 0.015
-LADO_TEXTURA = 1024
+RADIO = 0.15
+# Altura mínima sobre la tela para que un triángulo se quede. Con un valor
+# negativo se queda toda la tela del círculo; 0.015 deja solo la mano.
+ALTURA = -1
+LADO_TEXTURA = 2048
 
 
 def leer_glb(ruta):
@@ -53,9 +54,16 @@ def leer_glb(ruta):
     return posiciones, uvs, indices, textura
 
 
-def pedazo_mas_grande(triangulos):
-    """Los triángulos del grupo conectado (por vértices) más grande."""
-    padre = np.arange(triangulos.max() + 1)
+def pedazo_mas_grande(triangulos, posiciones):
+    """Los triángulos del grupo conectado más grande.
+
+    Scaniverse repite los vértices en los bordes de cada parche de la
+    textura, así que se conectan por posición y no por índice: si no, cada
+    parche queda como un pedazo aparte.
+    """
+    _, soldados = np.unique(np.round(posiciones / 1e-5).astype(np.int64), axis=0, return_inverse=True)
+    soldados = soldados.reshape(-1)
+    padre = np.arange(soldados.max() + 1)
 
     def raiz(x):
         while padre[x] != x:
@@ -63,12 +71,12 @@ def pedazo_mas_grande(triangulos):
             x = padre[x]
         return x
 
-    for a, b, c in triangulos:
+    for a, b, c in soldados[triangulos]:
         for x, y in ((a, b), (a, c)):
             rx, ry = raiz(x), raiz(y)
             if rx != ry:
                 padre[rx] = ry
-    raices = np.array([raiz(a) for a in triangulos[:, 0]])
+    raices = np.array([raiz(a) for a in soldados[triangulos[:, 0]]])
     valores, cuentas = np.unique(raices, return_counts=True)
     return triangulos[raices == valores[cuentas.argmax()]]
 
@@ -125,7 +133,7 @@ def main(entrada, salida):
     centros = posiciones[indices].mean(1)
     cerca = np.linalg.norm(centros - CENTRO, axis=1) < RADIO
     arriba = alturas[indices].mean(1) > ALTURA
-    triangulos = pedazo_mas_grande(indices[cerca & arriba])
+    triangulos = pedazo_mas_grande(indices[cerca & arriba], posiciones)
 
     # Girar para que la normal de la tela apunte hacia arriba (y).
     eje = np.cross(normal, [0, 1, 0])

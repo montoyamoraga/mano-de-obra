@@ -30,13 +30,13 @@ import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 // resbala hacia abajo mientras el escalón con la celda vecina sea muy alto,
 // como la arena: así la pila crece como pirámide, sin tamaño máximo. La
 // cámara no se aleja, y la pila termina llenando la pantalla.
-const CELDA = 0.06;            // metros; el puño mide unos 12 cm
-const GROSOR = 0.03;           // cuánto sube una celda con cada mano
-const ESCALON = 0.05;          // el escalón más alto que aguanta sin resbalar
-const ALTURA_CAIDA = 1.2;      // desde dónde caen, sobre donde aterrizan
-const DURACION_CAIDA = 0.8;    // segundos
-const MANOS_POR_SEGUNDO = 2;   // al principio
-const ACELERACION = 0.012;     // la cadencia crece un 1,2 % por segundo
+const CELDA = 0.1;             // metros; el puño con su tela mide unos 30 cm
+const GROSOR = 0.04;           // cuánto sube una celda con cada mano
+const ESCALON = 0.07;          // el escalón más alto que aguanta sin resbalar
+const ALTURA_CAIDA = 2;        // desde dónde caen, sobre donde aterrizan
+const DURACION_CAIDA = 0.45;   // segundos
+const MANOS_POR_SEGUNDO = 10;  // al principio
+const ACELERACION = 0.03;      // la cadencia crece un 3 % por segundo
 const POR_BLOQUE = 1024;       // manos por InstancedMesh
 
 // Azar con semilla, para que la pila sea siempre la misma.
@@ -174,7 +174,7 @@ function cuadro(ahora) {
 
   // La cámara gira despacio, siempre a la misma distancia.
   const angulo = quieto ? 0.6 : t * 0.08;
-  const distancia = 1.1, elevacion = 0.42, mira = 0.12;
+  const distancia = 2.2, elevacion = 0.42, mira = 0.2;
   camara.position.set(
     Math.cos(angulo) * Math.cos(elevacion) * distancia,
     mira + Math.sin(elevacion) * distancia,
