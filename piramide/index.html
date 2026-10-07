@@ -1,0 +1,333 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>pirámide de mano de obra</title>
+<meta name="description" content="Se ofrece: una pirámide de mil quince manos izquierdas, todas la misma.">
+<style>
+:root {
+  --bg: #ffffff; --fg: #1d1d1b; --muted: #6b6b66; --card: rgba(255, 255, 255, .88);
+  --line: #e2e0da; --acento: #ff9ecf;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #161615; --fg: #ecebe6; --muted: #9a9993; --card: rgba(22, 22, 21, .85);
+    --line: #333331;
+  }
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; background: var(--bg); color: var(--fg); }
+body { font: 16px/1.5 system-ui, -apple-system, "Segoe UI", sans-serif; }
+a { color: var(--fg); }
+
+canvas { position: fixed; inset: 0; width: 100%; height: 100%; display: block; }
+
+/* La ficha, como en un aviso de propiedades: siempre a la vista. */
+.ficha {
+  position: fixed; top: 16px; left: 16px; z-index: 2;
+  width: min(340px, calc(100% - 32px)); padding: 16px 18px;
+  background: var(--card); border: 1px solid var(--line); border-radius: 8px;
+  backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+}
+.etiqueta {
+  display: inline-block; font-size: .75rem; font-weight: 600; letter-spacing: .08em;
+  text-transform: uppercase; background: var(--acento); color: #1d1d1b;
+  padding: 2px 8px; border-radius: 4px;
+}
+.ficha h1 { font-size: 1.25rem; line-height: 1.2; margin: 10px 0 4px; }
+.cifra { font-size: 2.6rem; font-weight: 700; line-height: 1.1; font-variant-numeric: tabular-nums; }
+.unidad { color: var(--muted); margin-bottom: 12px; }
+dl {
+  display: grid; grid-template-columns: 1fr auto; gap: 2px 16px; margin: 0;
+  border-top: 1px solid var(--line); padding-top: 10px; font-size: .9rem;
+}
+dt { color: var(--muted); }
+dd { margin: 0; text-align: right; font-variant-numeric: tabular-nums; }
+.volver { display: block; margin-top: 12px; font-size: .85rem; color: var(--muted); }
+
+/* El recorrido: cada pantalla de scroll suma manos. */
+main { position: relative; z-index: 1; pointer-events: none; }
+.tramo {
+  height: 230vh; display: flex; align-items: center; justify-content: flex-end;
+  padding: 0 16px;
+}
+.tramo p {
+  pointer-events: auto; max-width: 380px; margin: 0; padding: 14px 18px;
+  background: var(--card); border: 1px solid var(--line); border-radius: 8px;
+  font-size: 1.1rem; backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+}
+.tramo:first-child { height: 140vh; align-items: flex-end; padding-bottom: 12vh; }
+.tramo:last-child { height: 100vh; }
+.pista { color: var(--muted); font-size: .9rem; }
+
+.cargando {
+  position: fixed; inset: 0; display: grid; place-items: center;
+  color: var(--muted); z-index: 0;
+}
+
+@media (max-width: 640px) {
+  .ficha { padding: 12px 14px; }
+  .ficha h1 { font-size: 1.05rem; }
+  .cifra { font-size: 2rem; }
+  dl { font-size: .8rem; }
+  .tramo { align-items: flex-end; padding-bottom: 8vh; }
+  .tramo p { font-size: 1rem; }
+}
+</style>
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://cdn.jsdelivr.net/npm/three@0.186.1/build/three.module.js",
+    "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.186.1/examples/jsm/"
+  }
+}
+</script>
+</head>
+<body>
+<div class="cargando" id="cargando">cargando manos…</div>
+
+<aside class="ficha">
+  <span class="etiqueta">se ofrece</span>
+  <h1>Pirámide de mano de obra</h1>
+  <div class="cifra" id="manos">1</div>
+  <div class="unidad" id="unidad">mano izquierda</div>
+  <dl>
+    <dt>dedos</dt><dd id="dedos">5</dd>
+    <dt>nudillos</dt><dd id="nudillos">14</dd>
+    <dt>huesos</dt><dd id="huesos">27</dd>
+    <dt>uñas</dt><dd id="unas">5</dd>
+    <dt>piel escaneada</dt><dd id="piel">—</dd>
+    <dt>pisos</dt><dd id="pisos">0 de 14</dd>
+  </dl>
+  <a class="volver" href="../index.html">← mano de obra</a>
+</aside>
+
+<main>
+  <section class="tramo"><p>Oportunidad única. Mano izquierda empuñada, escaneada el 7 de octubre de 2026. Nudillos originales, manga incluida.<br><span class="pista">Baja para sumar manos ↓</span></p></section>
+  <section class="tramo"><p>Puño firme, listo para trabajar. Disponible de inmediato. Disponible de lunes a domingo. Disponible.</p></section>
+  <section class="tramo"><p>Primer piso con buena iluminación. Cada mano se apoya en las de al lado.</p></section>
+  <section class="tramo"><p>Cinco dedos por mano, todos en su lugar. Empuñados, no se cuentan.</p></section>
+  <section class="tramo"><p>Las manos de arriba se apoyan en las de abajo. Las de abajo no se mueven.</p></section>
+  <section class="tramo"><p>Superficie de piel: <span class="piel">—</span>. Toda de la misma mano.</p></section>
+  <section class="tramo"><p>Se puede ampliar. Siempre hay otra mano igual a esta.</p></section>
+  <section class="tramo"><p>Vista despejada desde la cima. Desde la cima no se ven las manos de abajo.</p></section>
+  <section class="tramo"><p>Se aceptan ofertas.</p></section>
+  <section class="tramo"><p>Pirámide completa: <span class="total">1.015</span> manos izquierdas. Una sola mano.</p></section>
+</main>
+
+<script type="module">
+import * as THREE from 'three';
+import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+
+// La pirámide: PISOS pisos cuadrados, el de abajo de PISOS x PISOS manos.
+const PISOS = 14;
+const SEPARACION = 0.085;   // metros entre manos; el puño mide unos 12 cm
+const ALTO_PISO = 0.055;
+const ALTURA_CAIDA = 1.6;   // desde dónde caen, sobre su lugar
+const DURACION_CAIDA = 0.9; // segundos
+
+// Números de una mano.
+const POR_MANO = { dedos: 5, nudillos: 14, huesos: 27, unas: 5 };
+
+const formato = new Intl.NumberFormat('es-CL');
+const formatoArea = new Intl.NumberFormat('es-CL', { maximumFractionDigits: 2 });
+
+// Azar con semilla, para que la pila sea siempre la misma.
+let semilla = 7102026;
+function azar() {
+  semilla = (semilla * 1664525 + 1013904223) >>> 0;
+  return semilla / 4294967296;
+}
+
+// Lugares, de abajo hacia arriba; en cada piso, del centro hacia afuera.
+const lugares = [];
+for (let piso = 0; piso < PISOS; piso++) {
+  const lado = PISOS - piso;
+  const delPiso = [];
+  for (let i = 0; i < lado; i++) {
+    for (let j = 0; j < lado; j++) {
+      const x = (i - (lado - 1) / 2) * SEPARACION;
+      const z = (j - (lado - 1) / 2) * SEPARACION;
+      delPiso.push({ x, z, piso, d: Math.max(Math.abs(x), Math.abs(z)) + Math.hypot(x, z) * 0.01 + azar() * 0.001 });
+    }
+  }
+  delPiso.sort((a, b) => a.d - b.d);
+  for (const lugar of delPiso) {
+    lugares.push({
+      posicion: new THREE.Vector3(
+        lugar.x + (azar() - 0.5) * 0.035,
+        lugar.piso * ALTO_PISO + (azar() - 0.5) * 0.012,
+        lugar.z + (azar() - 0.5) * 0.035,
+      ),
+      giro: new THREE.Euler((azar() - 0.5) * 0.6, azar() * Math.PI * 2, (azar() - 0.5) * 0.6),
+      escala: 0.9 + azar() * 0.2,
+      vueltas: (azar() - 0.5) * 6,
+      caida: ALTURA_CAIDA * (0.8 + azar() * 0.6),
+      avance: 0, // 0: arriba, sin mostrar; 1: en su lugar
+      piso: lugar.piso,
+    });
+  }
+}
+const TOTAL = lugares.length;
+document.querySelector('.total').textContent = formato.format(TOTAL);
+
+// Escena, con las mismas luces que trompo y el visor de piruetas.xyz.
+const lienzo = document.createElement('canvas');
+document.body.prepend(lienzo);
+const dibujante = new THREE.WebGLRenderer({ canvas: lienzo, antialias: true, alpha: true });
+dibujante.setPixelRatio(Math.min(devicePixelRatio, 2));
+dibujante.outputColorSpace = THREE.SRGBColorSpace;
+const escena = new THREE.Scene();
+const camara = new THREE.PerspectiveCamera(35, 1, 0.01, 100);
+escena.add(camara);
+camara.add(new THREE.AmbientLight(0xffffff, 1.2));
+const luzPrincipal = new THREE.DirectionalLight(0xffffff, 1.5);
+luzPrincipal.position.set(1, 1, 2);
+camara.add(luzPrincipal);
+const luzRelleno = new THREE.DirectionalLight(0xffffff, 0.6);
+luzRelleno.position.set(-1, 0.5, -1);
+camara.add(luzRelleno);
+
+function ajustarTamano() {
+  dibujante.setSize(innerWidth, innerHeight, false);
+  camara.aspect = innerWidth / innerHeight;
+  // En pantallas angostas la ficha tapa la parte de arriba: la pila baja.
+  if (camara.aspect < 0.8) camara.setViewOffset(innerWidth, innerHeight, 0, -innerHeight * 0.14, innerWidth, innerHeight);
+  else camara.clearViewOffset();
+  camara.updateProjectionMatrix();
+}
+addEventListener('resize', ajustarTamano);
+ajustarTamano();
+
+const gltf = await new GLTFLoader().loadAsync('puno.glb');
+let original;
+gltf.scene.traverse((objeto) => { if (objeto.isMesh && !original) original = objeto; });
+const geometria = original.geometry;
+const material = original.material;
+// El escaneo es solo la superficie de arriba: sin esto, las manos que
+// quedan de lado se ven huecas.
+material.side = THREE.DoubleSide;
+
+// Piel escaneada de una mano, en m².
+const a = new THREE.Vector3(), b = new THREE.Vector3(), c = new THREE.Vector3();
+const pos = geometria.attributes.position, idx = geometria.index;
+let areaMano = 0;
+for (let i = 0; i < idx.count; i += 3) {
+  a.fromBufferAttribute(pos, idx.getX(i));
+  b.fromBufferAttribute(pos, idx.getX(i + 1));
+  c.fromBufferAttribute(pos, idx.getX(i + 2));
+  areaMano += b.sub(a).cross(c.sub(a)).length() / 2;
+}
+
+const manos = new THREE.InstancedMesh(geometria, material, TOTAL);
+manos.frustumCulled = false;
+const cero = new THREE.Matrix4().makeScale(0, 0, 0);
+for (let i = 0; i < TOTAL; i++) manos.setMatrixAt(i, cero);
+// La primera mano ya está en su lugar al abrir la página.
+lugares[0].avance = 1;
+manos.setMatrixAt(0, new THREE.Matrix4().compose(lugares[0].posicion,
+  new THREE.Quaternion().setFromEuler(lugares[0].giro), new THREE.Vector3().setScalar(lugares[0].escala)));
+escena.add(manos);
+document.getElementById('cargando').remove();
+
+// Cuántas manos según el scroll: una al principio, todas al final.
+let pedidas = 1;
+function leerScroll() {
+  const recorrido = document.documentElement.scrollHeight - innerHeight;
+  const fraccion = recorrido > 0 ? Math.min(1, Math.max(0, scrollY / recorrido)) : 0;
+  pedidas = 1 + Math.round((TOTAL - 1) * Math.pow(fraccion, 1.4));
+}
+addEventListener('scroll', leerScroll, { passive: true });
+leerScroll();
+
+let mostradas = -1;
+function actualizarFicha(n) {
+  if (n === mostradas) return;
+  mostradas = n;
+  document.getElementById('manos').textContent = formato.format(n);
+  document.getElementById('unidad').textContent = n === 1 ? 'mano izquierda' : 'manos izquierdas';
+  for (const [clave, cuantos] of Object.entries(POR_MANO)) {
+    document.getElementById(clave).textContent = formato.format(cuantos * n);
+  }
+  const piel = `${formatoArea.format(areaMano * n)} m²`;
+  document.getElementById('piel').textContent = piel;
+  for (const lugar of document.querySelectorAll('.piel')) lugar.textContent = piel;
+  // Un piso está completo cuando están todas sus manos.
+  let completos = 0, hasta = 0;
+  for (let piso = 0; piso < PISOS; piso++) {
+    hasta += (PISOS - piso) ** 2;
+    if (n >= hasta) completos++;
+  }
+  document.getElementById('pisos').textContent = `${completos} de ${PISOS}`;
+}
+
+// La cámara gira despacio y se aleja para que quepa lo que ya está armado.
+const matriz = new THREE.Matrix4();
+const cuaternion = new THREE.Quaternion();
+const giroCaida = new THREE.Euler();
+const posicion = new THREE.Vector3();
+const escala = new THREE.Vector3();
+let radioCamara = null, altoCamara = 0.03;
+const reloj = new THREE.Timer();
+const quieto = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+function cuadro(ahora) {
+  reloj.update(ahora);
+  const dt = Math.min(reloj.getDelta(), 0.25);
+  const t = reloj.getElapsed();
+  let cambio = false;
+  let colocadas = 0;
+  let ultimoPiso = 0;
+
+  for (let i = 0; i < TOTAL; i++) {
+    const lugar = lugares[i];
+    const meta = i < pedidas ? 1 : 0;
+    if (lugar.avance === meta) {
+      if (meta === 1) { colocadas++; ultimoPiso = lugar.piso; }
+      continue;
+    }
+    // Las que sobran se van más rápido de lo que llegan las nuevas.
+    const paso = quieto ? 1 : dt / DURACION_CAIDA * (meta ? 1 : 2.5);
+    lugar.avance = meta ? Math.min(1, lugar.avance + paso) : Math.max(0, lugar.avance - paso);
+    cambio = true;
+    if (lugar.avance === 0) { manos.setMatrixAt(i, cero); continue; }
+    if (meta === 1) ultimoPiso = Math.max(ultimoPiso, lugar.piso);
+    // Caída libre: la altura baja con el cuadrado del tiempo.
+    const p = lugar.avance;
+    posicion.copy(lugar.posicion);
+    posicion.y += lugar.caida * (1 - p * p);
+    giroCaida.set(lugar.giro.x, lugar.giro.y + lugar.vueltas * (1 - p), lugar.giro.z);
+    cuaternion.setFromEuler(giroCaida);
+    escala.setScalar(lugar.escala);
+    manos.setMatrixAt(i, matriz.compose(posicion, cuaternion, escala));
+  }
+  if (cambio) manos.instanceMatrix.needsUpdate = true;
+  actualizarFicha(pedidas);
+
+  // Encuadre: el ancho del piso más bajo armado y la altura de la pila.
+  const ladoAbajo = Math.min(pedidas, PISOS * PISOS);
+  const ancho = Math.sqrt(ladoAbajo) * SEPARACION + 0.12;
+  const alto = (ultimoPiso + 1) * ALTO_PISO + 0.07;
+  // La base gira: su mitad más ancha es la media diagonal del cuadrado.
+  const tanVertical = Math.tan(THREE.MathUtils.degToRad(camara.fov / 2));
+  const tanHorizontal = tanVertical * camara.aspect;
+  const radioMeta = Math.max(ancho * 0.72 / tanHorizontal, (alto * 0.6 + ancho * 0.3) / tanVertical) + 0.1;
+  radioCamara = radioCamara == null ? radioMeta : radioCamara + (radioMeta - radioCamara) * Math.min(1, dt * 2);
+  altoCamara += (alto * 0.45 - altoCamara) * Math.min(1, dt * 2);
+  const angulo = quieto ? 0.6 : t * 0.12;
+  const elevacion = 0.55;
+  camara.position.set(
+    Math.cos(angulo) * Math.cos(elevacion) * radioCamara,
+    altoCamara + Math.sin(elevacion) * radioCamara,
+    Math.sin(angulo) * Math.cos(elevacion) * radioCamara,
+  );
+  camara.lookAt(0, altoCamara, 0);
+
+  dibujante.render(escena, camara);
+  requestAnimationFrame(cuadro);
+}
+requestAnimationFrame(cuadro);
+</script>
+</body>
+</html>

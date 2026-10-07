@@ -5,9 +5,11 @@
 // videos se agrupan por medida (cuadrado, vertical) y se nombran como los
 // nombra trompo, <modelo>-<eje>-<sentido>-<medida>-<fondo>.mp4.
 //
+// También copia los subsitios, como piramide/.
+//
 // Uso: node hacer-sitio.mjs
 
-import { copyFileSync, readdirSync, statSync, writeFileSync } from 'node:fs';
+import { copyFileSync, cpSync, readdirSync, statSync, writeFileSync } from 'node:fs';
 import path from 'node:path';
 
 const CARPETA_SITIO = '_sitio';
@@ -94,6 +96,16 @@ const secciones = [...porMedida].map(([medida, nombres]) => {
 for (const modelo of MODELOS) copyFileSync(modelo, path.join(CARPETA_SITIO, modelo));
 const descargas = MODELOS.map((modelo) => `<a href="${enlace(modelo)}">${escapar(modelo)}</a>`).join(', ');
 
+// Subsitios: carpetas con su propio index.html, copiadas tal cual. Lo que
+// no es para publicar (como recortar.py) se queda fuera.
+const SUBSITIOS = ['piramide'];
+for (const subsitio of SUBSITIOS) {
+  cpSync(subsitio, path.join(CARPETA_SITIO, subsitio), {
+    recursive: true,
+    filter: (ruta) => !ruta.endsWith('.py'),
+  });
+}
+
 const pagina = `<!doctype html>
 <html lang="es">
 <head>
@@ -105,7 +117,8 @@ const pagina = `<!doctype html>
 <body>
 <main>
 <h1>${escapar(TITULO)}</h1>
-<p class="intro">Escaneos 3D de manos, hechos con Scaniverse. Modelo: ${descargas}.</p>
+<p class="intro">Escaneos 3D de manos, hechos con Scaniverse. Modelo: ${descargas}.
+También: <a href="piramide/index.html">pirámide de mano de obra</a>.</p>
 ${secciones.join('\n')}
 <footer>hecho con <a href="https://github.com/piruetasxyz/trompo">trompo</a></footer>
 </main>
