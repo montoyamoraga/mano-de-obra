@@ -22,12 +22,13 @@ open _sitio/index.html
 [piramide/](piramide/) es un subsitio: copias del puño caen sin parar sobre una pila que crece como pirámide, cada vez más rápido, hasta llenar la pantalla. No tiene tope: con miles de manos el navegador se pone lento.
 
 - [piramide/index.html](piramide/index.html): la página, con three.js desde jsDelivr.
-- [piramide/puno.glb](piramide/puno.glb): el puño sin la tela, hecho con [piramide/recortar.py](piramide/recortar.py) (necesita numpy y Pillow):
+- [piramide/puno.glb](piramide/puno.glb): el puño con un círculo de la tela, recortado con [piramide/recortar.py](piramide/recortar.py) (necesita numpy y Pillow) y simplificado a un cuarto de los triángulos con [piramide/simplificar.mjs](piramide/simplificar.mjs) (necesita `npm install`):
 
 ```bash
 python3 piramide/recortar.py 2026-10-07-mano-izq-puno.glb piramide/puno.glb
+node piramide/simplificar.mjs piramide/puno.glb piramide/puno.glb
 ```
 
-`hacer-sitio.mjs` copia `piramide/` al sitio, sin `recortar.py`.
+`hacer-sitio.mjs` copia `piramide/` al sitio, sin esos dos programas.
 
 Para agregar un escaneo, deja el `.glb` en la raíz y súmalo a `modelos` en `trompo.yml`.

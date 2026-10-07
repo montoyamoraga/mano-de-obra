@@ -1,0 +1,8 @@
+{
+  "name": "mano-de-obra",
+  "private": true,
+  "type": "module",
+  "devDependencies": {
+    "meshoptimizer": "1.3.0"
+  }
+}

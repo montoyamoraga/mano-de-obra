@@ -1,3 +1,4 @@
 # El sitio se construye con trompo y hacer-sitio.mjs; no se guarda.
 _sitio/
 .DS_Store
+node_modules/

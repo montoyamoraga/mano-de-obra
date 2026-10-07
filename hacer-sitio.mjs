@@ -96,13 +96,15 @@ const secciones = [...porMedida].map(([medida, nombres]) => {
 for (const modelo of MODELOS) copyFileSync(modelo, path.join(CARPETA_SITIO, modelo));
 const descargas = MODELOS.map((modelo) => `<a href="${enlace(modelo)}">${escapar(modelo)}</a>`).join(', ');
 
-// Subsitios: carpetas con su propio index.html, copiadas tal cual. Lo que
-// no es para publicar (como recortar.py) se queda fuera.
+// Subsitios: carpetas con su propio index.html, copiadas tal cual. Los
+// programas que preparan los modelos (recortar.py, simplificar.mjs) se
+// quedan fuera.
 const SUBSITIOS = ['piramide'];
+const NO_PUBLICAR = ['recortar.py', 'simplificar.mjs'];
 for (const subsitio of SUBSITIOS) {
   cpSync(subsitio, path.join(CARPETA_SITIO, subsitio), {
     recursive: true,
-    filter: (ruta) => !ruta.endsWith('.py'),
+    filter: (ruta) => !NO_PUBLICAR.includes(path.basename(ruta)),
   });
 }
 
